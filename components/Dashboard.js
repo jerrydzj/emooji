@@ -98,9 +98,14 @@ export default function Dashboard() {
     return <Loading/>
   }
 
-  if (!currentUser) { 
+  if (!currentUser) {
+    if (!mode) {
+      return (
+        <Login defaultIsRegister={false}/>
+      )
+    }
     return (
-      mode ? (mode == "login" ? <Login defaultIsRegister={false}/> : <Login defaultIsRegister={true}/>) : <Login defaultIsRegister={false}/>
+      mode == "login" ? <Login defaultIsRegister={false}/> : <Login defaultIsRegister={true}/>
     )
   }
 
