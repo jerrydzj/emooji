@@ -6,11 +6,12 @@ import { useAuth } from '@/context/AuthContext';
 
 const fugaz = Fugaz_One({ subsets : ["latin"], weight : ['400']});
 
-export default function Login() {
+export default function Login(props) {
 
+  const { defaultIsRegister } = props
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [isRegister, setIsRegister] = useState(false)
+  const [isRegister, setIsRegister] = useState(defaultIsRegister)
   const [authenticating, setAuthenticating] = useState(false)
   const { signup, login } = useAuth()
 
@@ -19,14 +20,12 @@ export default function Login() {
     setAuthenticating(true)
     try {
       if (isRegister) {
-        console.log("Signing up a new user")
         await signup(email, password)
       } else {
-        console.log("Logging in existing user")
         await login(email, password)
       }
     } catch (err) {
-      console.log(err)
+      console.log(err.message)
     } finally {
       setAuthenticating(false)
     }
@@ -41,7 +40,7 @@ export default function Login() {
       }} className="max-w-[400px] w-full mx-auto px-3 duration-200 hover:border-indigo-600 focus:border-indigo-600 py-2 sm:py-3 border border-solid border-indigo-400 rounded-full outline-none" placeholder="Email"/>
       <input value={password} onChange={(e) => {
         setPassword(e.target.value)
-      }}className="max-w-[400px] w-full mx-auto px-3 duration-200 hover:border-indigo-600 focus:border-indigo-600 py-2 sm:py-3 border border-solid border-indigo-400 rounded-full outline-none" placeholder="Password" type="password"/>
+      }} className="max-w-[400px] w-full mx-auto px-3 duration-200 hover:border-indigo-600 focus:border-indigo-600 py-2 sm:py-3 border border-solid border-indigo-400 rounded-full outline-none" placeholder="Password" type="password"/>
       <div className="max-w-[400px] w-full mx-auto">
         <Button clickHandler={handleSubmit} text={authenticating ? "Submitting..." : "Submit"} full/>
       </div>

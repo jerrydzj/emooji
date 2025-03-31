@@ -7,6 +7,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { db } from '@/firebase';
 import Loading from './Loading';
 import Login from './Login';
+import { useSearchParams } from 'next/navigation';
 
 const fugaz = Fugaz_One({ subsets : ["latin"], weight : ['400']});
 
@@ -15,6 +16,8 @@ export default function Dashboard() {
   const { currentUser, userDataObj, setUserDataObj, loading } = useAuth()
   const [data, setData] = useState({})
   const now = new Date()
+  const searchParams = useSearchParams()
+  const mode = searchParams.get("mode")
 
   function countValues() {
     let numDays = 0
@@ -73,7 +76,7 @@ export default function Dashboard() {
       }, { merge : true })
 
     } catch (err) {
-      console.log("Failed to set data: ", err.message)
+      console.log(err.message)
     }
 
   }
@@ -96,15 +99,15 @@ export default function Dashboard() {
   }
 
   if (!currentUser) { 
-    return <Login/>
+    return (
+      mode ? (mode == "login" ? <Login defaultIsRegister={false}/> : <Login defaultIsRegister={true}/>) : <Login defaultIsRegister={false}/>
+    )
   }
 
   return (
     <div className="flex flex-col flex-1 gap-8 sm:gap-12 md:gap-16">
       <div className="grid grid-cols-3 bg-indigo-50 text-indigo-500 p-4 gap-4 rounded-lg">
         {Object.keys(statuses).map((status, statusIndex) => {
-          console.log(status)
-          console.log(statuses[status])
           return (
             <div key={statusIndex} className="flex flex-col gap-1 sm:gap-2">
               <p className="font-medium capitalize text-xs sm:text-sm truncate">{status.replaceAll("_", " ")}</p>
@@ -129,7 +132,7 @@ export default function Dashboard() {
           )
         })}
       </div>
-      <Calendar completeData={data} handleSetMood={handleSetMood}/>
+      <Calendar completeData={data}/>
     </div>
   )
 
