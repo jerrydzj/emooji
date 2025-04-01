@@ -3,6 +3,7 @@ import { Fugaz_One } from 'next/font/google';
 import React, { useState } from 'react'
 import Button from './Button';
 import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 const fugaz = Fugaz_One({ subsets : ["latin"], weight : ['400']});
 
@@ -14,6 +15,7 @@ export default function Login(props) {
   const [isRegister, setIsRegister] = useState(defaultIsRegister)
   const [authenticating, setAuthenticating] = useState(false)
   const { signup, login } = useAuth()
+  const router = useRouter()
 
   async function handleSubmit() {
     if (!email || !password || password.length < 6) { return }
@@ -24,6 +26,7 @@ export default function Login(props) {
       } else {
         await login(email, password)
       }
+      router.push("/dashboard")
     } catch (err) {
       console.log(err.message)
     } finally {
